@@ -1,0 +1,15 @@
+.popup__content {
+    position: relative;
+    width: 430px;
+    background-color: white;
+    color: black;
+    padding: 0;
+    border-radius: 10px;
+    box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.15);
+}
+
+@media screen and (max-width: 620px) {
+    .popup__content {
+        width: 282px;
+    }
+}
