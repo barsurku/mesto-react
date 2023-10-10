@@ -3,7 +3,7 @@ import PopupWithForm from "./PopupWithForm";
 import { useContext, useEffect, useState } from "react";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-export default function EditProfilePopup(props) {
+export default function EditProfilePopup(props, isLoading) {
   const currentUser = useContext(CurrentUserContext);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -36,11 +36,10 @@ export default function EditProfilePopup(props) {
     <PopupWithForm
       name={"edit-button"}
       title={"Редактировать профиль"}
-      buttonText={"Сохранить"}
       isOpen={props.isOpen}
       onClose={props.onClose}
       onSubmit={handleSubmit}
-    >
+      buttonText={isLoading ? "Сохранение..." : "Сохранить"}>
       <input
         id="name"
         required

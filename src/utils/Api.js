@@ -74,7 +74,6 @@ class Api {
     .then((res) => this._getResponse(res))
   }
 
-  // не забыть исправить в следующей пр
   setCardLike(id) {
     return fetch(`${this.#url}/cards/${id}/likes`, {
       method: 'PUT',
@@ -83,7 +82,6 @@ class Api {
     .then((res) => this._getResponse(res))
   }
 
-    // не забыть исправить в следующей пр
   removeCardLike(id) {
     return fetch(`${this.#url}/cards/${id}/likes`, {
       method: 'DELETE',

@@ -21,6 +21,10 @@ export default function App() {
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
 
+  const [isLoading, setIsLoading] = React.useState(false);
+  const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard
+
+
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getInitialCards()])
       .then(([user, cardData]) => {
@@ -63,11 +67,14 @@ export default function App() {
 
   // функция удаления карточек
   function handleCardDelete(card) {
+    setIsLoading(true);
+    setDeleteCardPopupOpen(true);
     api
       .deleteMyCard(card._id)
       .then(() => {
         setCards((state) => state.filter((item) => item._id !== card._id));
       })
+      .finally(() => setIsLoading(false))
       .catch((error) => {
         console.error(error);
       });
@@ -75,12 +82,14 @@ export default function App() {
 
   // функция изменения профиля
   function handleUpdateUser(data) {
+    setIsLoading(true);
     api
       .editProfile(data)
       .then((res) => {
         setCurrentUser(res);
         closeAllPopups();
       })
+      .finally(() => setIsLoading(false))
       .catch((error) => {
         console.error(error);
       });
@@ -88,6 +97,7 @@ export default function App() {
 
   // функция изменения аватара
   function handleUpdateAvatar(data) {
+    setIsLoading(true);
     api
       .changeProfileAvatar(data)
       .then((res) => {
@@ -96,17 +106,21 @@ export default function App() {
       })
       .catch((error) => {
         console.error(error);
-      });
+      })
+      .finally(() => setIsLoading(false))
+
   };
 
   // функция добавления новой карточки
   function handleAddPlaceSubmit(cardData) {
+    setIsLoading(true);
     api
       .addNewCard(cardData)
       .then((newCard) => {
         setCards([newCard, ...cards]);
         closeAllPopups();
       })
+      .finally(() => setIsLoading(false))
       .catch((error) => {
         console.error(error);
       });
@@ -128,6 +142,8 @@ export default function App() {
     setSelectedCard(card);
   };
 
+
+
   // закрытие попапов
   function closeAllPopups() {
     setIsEditAvatarPopupOpen(false);
@@ -136,6 +152,20 @@ export default function App() {
     setSelectedCard(null);
     setDeleteCardPopupOpen(false);
   };
+
+  useEffect(() => {
+    function closeByEscape(evt) {
+      if(evt.key === 'Escape') {
+        closeAllPopups();
+      }
+    }
+    if(isOpen) {
+      document.addEventListener('keydown', closeByEscape);
+      return () => {
+        document.removeEventListener('keydown', closeByEscape);
+      }
+    }
+  }, [isOpen]) 
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -182,10 +212,10 @@ export default function App() {
       <PopupWithForm
         name={"confirm-delete"}
         title={"Вы уверены?"}
-        buttonText={"Да"}
         isOpen={isDeleteCardPopupOpen}
         onClose={closeAllPopups}
-      ></PopupWithForm>
+        buttonText={isLoading? 'Удаление...' : 'Да'}
+      />
 
     </CurrentUserContext.Provider>
   );

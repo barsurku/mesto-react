@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import PopupWithForm from "./PopupWithForm";
 
-export default function AddPlacePopup(props) {
+export default function AddPlacePopup(props, isLoading) {
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
 
@@ -32,11 +32,11 @@ export default function AddPlacePopup(props) {
     <PopupWithForm
       name={"add-button"}
       title={"Новое место"}
-      buttonText={"Создать"}
       isOpen={props.isOpen}
       onClose={props.onClose}
       onSubmit={handleSubmit}
-    >
+      buttonText={isLoading ? "Сохранение..." : "Создать"}>
+
       <input
         id="placeName"
         required
@@ -61,7 +61,7 @@ export default function AddPlacePopup(props) {
         onChange={linkChange}
       />
       <span className="popup__input-error" id="error-placeLink"></span>
-      
+
     </PopupWithForm>
   );
 }

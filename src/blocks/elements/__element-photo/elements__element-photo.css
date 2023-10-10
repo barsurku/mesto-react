@@ -1,5 +1,7 @@
 .elements__element-photo {
     width: 282px;
     height: 282px;
+    background-size: cover;
+    background-position: center;
     cursor: pointer;
 }
