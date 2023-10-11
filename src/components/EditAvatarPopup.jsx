@@ -2,7 +2,7 @@ import React from "react";
 import { useRef } from "react";
 import PopupWithForm from "./PopupWithForm";
 
-export default function EditAvatarPopup(props, isLoading) {
+export default function EditAvatarPopup(props, {isLoading}) {
   const avatarRef = useRef(null);
 
   function handleSubmit(e) {

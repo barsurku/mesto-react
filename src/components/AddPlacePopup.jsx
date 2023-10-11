@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import PopupWithForm from "./PopupWithForm";
 
-export default function AddPlacePopup(props, isLoading) {
+export default function AddPlacePopup(props, {isLoading}) {
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
 

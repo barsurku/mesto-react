@@ -23,6 +23,7 @@ export default function App() {
 
   const [isLoading, setIsLoading] = React.useState(false);
   const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard
+  const [deleteMyCard, setDeleteMyCard] = React.useState() //card deleting
 
 
   useEffect(() => {
@@ -65,19 +66,24 @@ export default function App() {
     }
   };
 
-  // функция удаления карточек
-  function handleCardDelete(card) {
+
+  // удаление карточки с подтверждением
+  const handleCardDelete = (event) => {
+    event.preventDefault();
+
     setIsLoading(true);
-    setDeleteCardPopupOpen(true);
-    api
-      .deleteMyCard(card._id)
-      .then(() => {
-        setCards((state) => state.filter((item) => item._id !== card._id));
-      })
-      .finally(() => setIsLoading(false))
-      .catch((error) => {
-        console.error(error);
-      });
+    api.deleteMyCard(deleteMyCard._id).then(() =>
+      api
+        .getInitialCards()
+        .then((item) => {
+          setCards(item);
+        })
+        .then(() => closeAllPopups())
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => setIsLoading(false))
+    );
   };
 
   // функция изменения профиля
@@ -89,10 +95,10 @@ export default function App() {
         setCurrentUser(res);
         closeAllPopups();
       })
-      .finally(() => setIsLoading(false))
       .catch((error) => {
         console.error(error);
-      });
+      })
+      .finally(() => setIsLoading(false))
   };
 
   // функция изменения аватара
@@ -108,7 +114,6 @@ export default function App() {
         console.error(error);
       })
       .finally(() => setIsLoading(false))
-
   };
 
   // функция добавления новой карточки
@@ -120,10 +125,10 @@ export default function App() {
         setCards([newCard, ...cards]);
         closeAllPopups();
       })
-      .finally(() => setIsLoading(false))
       .catch((error) => {
         console.error(error);
-      });
+      })
+      .finally(() => setIsLoading(false))
   };
 
   function handleEditProfileClick() {
@@ -142,7 +147,10 @@ export default function App() {
     setSelectedCard(card);
   };
 
-
+  const handleDeleteClick = (card) => {
+    setDeleteCardPopupOpen(true);
+    setDeleteMyCard(card);
+};
 
   // закрытие попапов
   function closeAllPopups() {
@@ -179,7 +187,7 @@ export default function App() {
           onCardClick={handleCardClick}
           cards={cards}
           onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
+          onCardDelete={handleDeleteClick}
         />
         <Footer />
       </div>
@@ -189,6 +197,7 @@ export default function App() {
         isOpen={isEditProfilePopupOpen}
         onClose={closeAllPopups}
         onUpdateUser={handleUpdateUser}
+        isLoading={isLoading}
       />
 
       {/* <!--попап изменения аватарки--> */}
@@ -196,6 +205,7 @@ export default function App() {
         isOpen={isEditAvatarPopupOpen}
         onClose={closeAllPopups}
         onUpdateAvatar={handleUpdateAvatar}
+        isLoading={isLoading}
       />
 
       {/* <!-- попап добавления карточки --> */}
@@ -203,6 +213,7 @@ export default function App() {
         isOpen={isAddPlacePopupOpen}
         onClose={closeAllPopups}
         onAddPlace={handleAddPlaceSubmit}
+        isLoading={isLoading}
       />
 
       {/* <!-- попап карточки --> */}
@@ -215,6 +226,9 @@ export default function App() {
         isOpen={isDeleteCardPopupOpen}
         onClose={closeAllPopups}
         buttonText={isLoading? 'Удаление...' : 'Да'}
+        isLoading={isLoading}
+        onSubmit={handleCardDelete}
+        card={deleteMyCard}
       />
 
     </CurrentUserContext.Provider>
