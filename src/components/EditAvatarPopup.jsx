@@ -2,7 +2,7 @@ import React from "react";
 import { useRef } from "react";
 import PopupWithForm from "./PopupWithForm";
 
-export default function EditAvatarPopup(props, {isLoading}) {
+export default function EditAvatarPopup(props) {
   const avatarRef = useRef(null);
 
   function handleSubmit(e) {
@@ -18,7 +18,7 @@ export default function EditAvatarPopup(props, {isLoading}) {
       isOpen={props.isOpen}
       onClose={props.onClose}
       onSubmit={handleSubmit}
-      buttonText={isLoading ? "Сохранение..." : "Сохранить"}>
+      buttonText={props.isLoading ? "Сохранение..." : "Сохранить"}>
       <input
         ref={avatarRef}
         type="url"
